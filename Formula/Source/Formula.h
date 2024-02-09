@@ -75,17 +75,19 @@ private:
     void ParseOperation(FOperandBuffer& OutOperands, FSolutionInfo<T>& OutInfo) const
     {
         uint8 OperationID = PullFromData<uint8>(OutInfo.Index);
-
+        
         const FOperation& Operation = FOperations::Array[OperationID].get();
         
         FOperandBuffer OperationOperands;
-
+        
         for (size_t i = 0; i < Operation.NumberOfOperands; i++)
         {
             ParseSolution(OperationOperands, OutInfo);
         }
-
-        OutOperands.Push(Operation(OperationOperands));
+        
+        auto Result = Operation(OperationOperands);
+        
+        OutOperands.Push(Result);
     }
 
     template<typename T>
