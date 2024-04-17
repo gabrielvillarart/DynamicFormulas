@@ -1,8 +1,6 @@
 #pragma once
 
-#include <functional>
-
-#include "Operand.h"
+#include "FormulaCore.h"
 
 class FOperandBuffer;
 
@@ -18,7 +16,7 @@ public:
     };
 
 public:
-    using OperationFunctionType = FOperand(*)(FOperandBuffer&);
+    using OperationFunctionType = double(*)(FOperandBuffer&);
 
     friend class FOperations;
 
@@ -64,7 +62,7 @@ public:
     {
         return Function == Other.Function;
     }
-    FOperand operator ()(FOperandBuffer& Operands) const;
+    double operator ()(FOperandBuffer& Operands) const;
     
     const uint8 NumberOfOperands;
     const uint8 Priority;
@@ -81,48 +79,48 @@ private:
     using ESyntaxType = FOperation::ESyntaxType;
 
 private:
-    static FOperand NoneFunction(FOperandBuffer& OutOperands);
-    static FOperand LessThanFunction(FOperandBuffer& OutOperands);
-    static FOperand GreaterThanFunction(FOperandBuffer& OutOperands);
-    static FOperand LessEqualThanFunction(FOperandBuffer& OutOperands);
-    static FOperand GreaterEqualThanFunction(FOperandBuffer& OutOperands);
-    static FOperand EqualToFunction(FOperandBuffer& OutOperands);
-    static FOperand NotEqualToFunction(FOperandBuffer& OutOperands);
-    static FOperand MaximumFunction(FOperandBuffer& OutOperands);
-    static FOperand MinimumFunction(FOperandBuffer& OutOperands);
-    static FOperand AverageFunction(FOperandBuffer& OutOperands);
-    static FOperand SignFunction(FOperandBuffer& OutOperands);
-    static FOperand NegationFunction(FOperandBuffer& OutOperands);
-    static FOperand AbsoluteFunction(FOperandBuffer& OutOperands);
-    static FOperand GetNegativeFunction(FOperandBuffer& OutOperands);
-    static FOperand RoundFunction(FOperandBuffer& OutOperands);
-    static FOperand RoofFunction(FOperandBuffer& OutOperands);
-    static FOperand FloorFunction(FOperandBuffer& OutOperands);
-    static FOperand TruncateFunction(FOperandBuffer& OutOperands);
-    static FOperand AdditionFunction(FOperandBuffer& OutOperands);
-    static FOperand SubtractionFunction(FOperandBuffer& OutOperands);
-    static FOperand MultiplicationFunction(FOperandBuffer& OutOperands);
-    static FOperand DivisionFunction(FOperandBuffer& OutOperands);
-    static FOperand ModuloFunction(FOperandBuffer& OutOperands);
-    static FOperand RemainderFunction(FOperandBuffer& OutOperands);
-    static FOperand ExponentiationFunction(FOperandBuffer& OutOperands);
-    static FOperand SquareFunction(FOperandBuffer& OutOperands);
-    static FOperand SquareRootFunction(FOperandBuffer& OutOperands);
-    static FOperand CubicRootFunction(FOperandBuffer& OutOperands);
-    static FOperand SineFunction(FOperandBuffer& OutOperands);
-    static FOperand CosineFunction(FOperandBuffer& OutOperands);
-    static FOperand TangentFunction(FOperandBuffer& OutOperands);
-    static FOperand SecantFunction(FOperandBuffer& OutOperands);
-    static FOperand CosecantFunction(FOperandBuffer& OutOperands);
-    static FOperand CotangentFunction(FOperandBuffer& OutOperands);
-    static FOperand ArcsineFunction(FOperandBuffer& OutOperands);
-    static FOperand ArccosineFunction(FOperandBuffer& OutOperands);
-    static FOperand ArctangentFunction(FOperandBuffer& OutOperands);
-    static FOperand ArcsecantFunction(FOperandBuffer& OutOperands);
-    static FOperand ArccosecantFunction(FOperandBuffer& OutOperands);
-    static FOperand ArccotangentFunction(FOperandBuffer& OutOperands);
-    static FOperand LinearInterpolationFunction(FOperandBuffer& OutOperands);
-    static FOperand MapRangeFunction(FOperandBuffer& OutOperands);
+    static double NoneFunction(FOperandBuffer& OutOperands);
+    static double LessThanFunction(FOperandBuffer& OutOperands);
+    static double GreaterThanFunction(FOperandBuffer& OutOperands);
+    static double LessEqualThanFunction(FOperandBuffer& OutOperands);
+    static double GreaterEqualThanFunction(FOperandBuffer& OutOperands);
+    static double EqualToFunction(FOperandBuffer& OutOperands);
+    static double NotEqualToFunction(FOperandBuffer& OutOperands);
+    static double MaximumFunction(FOperandBuffer& OutOperands);
+    static double MinimumFunction(FOperandBuffer& OutOperands);
+    static double AverageFunction(FOperandBuffer& OutOperands);
+    static double SignFunction(FOperandBuffer& OutOperands);
+    static double NegationFunction(FOperandBuffer& OutOperands);
+    static double AbsoluteFunction(FOperandBuffer& OutOperands);
+    static double GetNegativeFunction(FOperandBuffer& OutOperands);
+    static double RoundFunction(FOperandBuffer& OutOperands);
+    static double RoofFunction(FOperandBuffer& OutOperands);
+    static double FloorFunction(FOperandBuffer& OutOperands);
+    static double TruncateFunction(FOperandBuffer& OutOperands);
+    static double AdditionFunction(FOperandBuffer& OutOperands);
+    static double SubtractionFunction(FOperandBuffer& OutOperands);
+    static double MultiplicationFunction(FOperandBuffer& OutOperands);
+    static double DivisionFunction(FOperandBuffer& OutOperands);
+    static double ModuloFunction(FOperandBuffer& OutOperands);
+    static double RemainderFunction(FOperandBuffer& OutOperands);
+    static double ExponentiationFunction(FOperandBuffer& OutOperands);
+    static double SquareFunction(FOperandBuffer& OutOperands);
+    static double SquareRootFunction(FOperandBuffer& OutOperands);
+    static double CubicRootFunction(FOperandBuffer& OutOperands);
+    static double SineFunction(FOperandBuffer& OutOperands);
+    static double CosineFunction(FOperandBuffer& OutOperands);
+    static double TangentFunction(FOperandBuffer& OutOperands);
+    static double SecantFunction(FOperandBuffer& OutOperands);
+    static double CosecantFunction(FOperandBuffer& OutOperands);
+    static double CotangentFunction(FOperandBuffer& OutOperands);
+    static double ArcsineFunction(FOperandBuffer& OutOperands);
+    static double ArccosineFunction(FOperandBuffer& OutOperands);
+    static double ArctangentFunction(FOperandBuffer& OutOperands);
+    static double ArcsecantFunction(FOperandBuffer& OutOperands);
+    static double ArccosecantFunction(FOperandBuffer& OutOperands);
+    static double ArccotangentFunction(FOperandBuffer& OutOperands);
+    static double LinearInterpolationFunction(FOperandBuffer& OutOperands);
+    static double MapRangeFunction(FOperandBuffer& OutOperands);
 
 
 public:

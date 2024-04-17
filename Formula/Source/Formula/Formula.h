@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Core.h"
-#include "Operand.h"
+#include "FormulaCore.h"
 #include "Operation.h"
 #include "OperandBuffer.h"
 #include "Keyword.h"
@@ -14,16 +13,7 @@ enum class EFormulaParticleType : uint8
 
     Keyword,
 
-    Float32,
     Float64,
-    UInt8,
-    UInt16,
-    UInt32,
-    UInt64,
-    Int8,
-    Int16,
-    Int32,
-    Int64,
 };
 
 
@@ -60,7 +50,7 @@ private:
     template<typename T>
     struct FSolutionInfo
     {
-        using FunctionType = FOperand(T::*)(const FKeyword&) const;
+        using FunctionType = double(T::*)(const FKeyword&) const;
 
         FSolutionInfo(const T* ObjectPtr, const FunctionType ParseFunctionPtr)
 			: ObjectPtr(ObjectPtr), FunctionPtr(ParseFunctionPtr)
@@ -97,7 +87,7 @@ private:
 
         FKeyword Keyword = FKeyword((const char*)&Data[OutInfo.Index], Length);
 
-		FOperand Operand = ((*OutInfo.ObjectPtr).*OutInfo.FunctionPtr)(Keyword);
+		double Operand = ((*OutInfo.ObjectPtr).*OutInfo.FunctionPtr)(Keyword);
 
         OutInfo.Index += Length; 
 
@@ -123,63 +113,9 @@ private:
 
             break;
 
-        case EFormulaParticleType::Float32:
-
-            OutOperands.Push(FOperand(PullFromData<float>(OutInfo.Index)));
-
-            break;
-
         case EFormulaParticleType::Float64:
 
-            OutOperands.Push(FOperand(PullFromData<double>(OutInfo.Index)));
-
-            break;
-
-        case EFormulaParticleType::UInt8:
-
-            OutOperands.Push(FOperand(PullFromData<uint8>(OutInfo.Index)));
-
-            break;
-
-        case EFormulaParticleType::UInt16:
-
-            OutOperands.Push(FOperand(PullFromData<uint16>(OutInfo.Index)));
-
-            break;
-
-        case EFormulaParticleType::UInt32:
-
-            OutOperands.Push(FOperand(PullFromData<uint32>(OutInfo.Index)));
-
-            break;
-
-        case EFormulaParticleType::UInt64:
-
-            OutOperands.Push(FOperand(PullFromData<uint64>(OutInfo.Index)));
-
-            break;
-
-        case EFormulaParticleType::Int8:
-
-            OutOperands.Push(FOperand(PullFromData<int8>(OutInfo.Index)));
-
-            break;
-
-        case EFormulaParticleType::Int16:
-
-            OutOperands.Push(FOperand(PullFromData<int16>(OutInfo.Index)));
-
-            break;
-
-        case EFormulaParticleType::Int32:
-
-            OutOperands.Push(FOperand(PullFromData<int32>(OutInfo.Index)));
-
-            break;
-
-        case EFormulaParticleType::Int64:
-
-            OutOperands.Push(FOperand(PullFromData<int64>(OutInfo.Index)));
+            OutOperands.Push(double(PullFromData<double>(OutInfo.Index)));
 
             break;
 
@@ -188,7 +124,7 @@ private:
 
 public:
     template<typename T>
-    FOperand GetSolution(const T* ObjectPtr, FOperand(T::*ParseFunctionPtr)(const FKeyword&) const) const
+    double GetSolution(const T* ObjectPtr, double(T::*ParseFunctionPtr)(const FKeyword&) const) const
     {
         FSolutionInfo<T> Info(ObjectPtr, ParseFunctionPtr);
         FOperandBuffer Operands;
@@ -197,6 +133,8 @@ public:
 
         return Operands.Pull();
     }
+
+    constexpr uint8 GetSize() const { return FormulaSize; }
 
 private:
     uint8 Data[FormulaSize] = {};

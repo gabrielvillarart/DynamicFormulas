@@ -1,31 +1,30 @@
 
-#include "Formula.h"
-#include "Operand.h"
-#include "Operation.h"
-#include "FormulaBuilder.h"
+#include "Formula/Formula.h"
+#include "Formula/Operation.h"
+#include "Formula/FormulaBuilder.h"
 #include "Profiler.h"
 
 class FSkill
 {
 public:
-    FOperand ParseKeyword(const FKeyword& Keyword) const
+    double ParseKeyword(const FKeyword& Keyword) const
     {
         if (Keyword == "Strength")
-            return FOperand(Strength);
+            return Strength;
 
         else if (Keyword == "Agility")
-            return FOperand(Agility);
+            return Agility;
 
         else if (Keyword == "Intelligence")
-            return FOperand(Intelligence);
+            return Intelligence;
 
-        return FOperand(0);
+        return 0.0;
     }
 
     template<size_t FormulaSize>
-    float Operate(const TFormula<FormulaSize>& Formula)
+    double Operate(const TFormula<FormulaSize>& Formula) const
     {
-        return Formula.GetSolution(this, &FSkill::ParseKeyword).Get<double>();
+        return Formula.GetSolution(this, &FSkill::ParseKeyword);
     }
 
     void Tick()
@@ -42,19 +41,23 @@ public:
 
 };
 
-constexpr auto Formula2 = FORMULA("(5 / Strength * Strength / Strength * Strength) * 0.005");
-
 int main()
 {
     FSkill Skill;
 
-    double Result2 = 0.0;
-
-    //while (std::cin.get())
-    for(int i = 0; i < 10; i++)
+    double Result = 0.0;
+    while (true)
     {
-        PROFILE("Main");
+        {
+            PROFILE("Main");
+            for (int i = 0; i < 10000; i++)
+            {
+                constexpr auto Formula = FORMULA("(5 / Strength * Strength / Strength * Strength) * 0.005");
+                Result += Skill.Operate(Formula);
+                Skill.Tick();
+            }
+        }
 
-        Result2 += Skill.Operate(Formula2);
+        std::cin.get();
     }
 }

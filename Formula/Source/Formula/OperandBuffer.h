@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Operand.h"
 #include "Operation.h"
 
 class FOperandBuffer
@@ -8,16 +7,16 @@ class FOperandBuffer
 public:
     FOperandBuffer() = default;
 
-    FOperand Pull()
+    double Pull()
     {
 		if (IsEmpty())
-            return FOperand();
+            return double();
 
         Index--;
         return Buffer[Index];
     }
 
-    void Push(const FOperand& Operand)
+    void Push(double Operand)
     {
 		if (IsFull())
             return;
@@ -37,6 +36,6 @@ public:
     }
 
 private:
-    FOperand Buffer[FOperations::GetMaxNumberOfOperands()] = {};
+    double Buffer[FOperations::GetMaxNumberOfOperands()] = {};
     uint8 Index = 0;
 };

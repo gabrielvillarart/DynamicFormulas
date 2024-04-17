@@ -471,9 +471,9 @@ private:
                     return;
                 }
                 
-                float Number = StringTo<float>(NumberBuffer, NumberIndex);
+                double Number = StringTo<double>(NumberBuffer, NumberIndex);
                 
-                PushIntoData(OutParsingContext, OutData, OutDataIndex, EParticleType::Float32);
+                PushIntoData(OutParsingContext, OutData, OutDataIndex, EParticleType::Float64);
                 PushIntoData(OutParsingContext, OutData, OutDataIndex, Number);
 
                 OutParsingContext.Stage = EParsingStage::AfterOperand;
