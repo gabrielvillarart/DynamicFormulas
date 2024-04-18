@@ -2,6 +2,8 @@
 **/x64/
 **/Formula/x64/
 
+FormulaProject/*
+
 # Visual Studio files and folder
 .vs/
 **.sln
