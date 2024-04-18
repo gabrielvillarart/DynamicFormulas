@@ -1,15 +1,15 @@
 #include "Operation.h"
 #include "OperandBuffer.h"
 
-double FOperation::operator()(FOperandBuffer& Operands) const
+double FOperation::operator()(const FOperandBuffer& Operands) const
 {
     return Function(Operands);
 }
 
-double FOperations::NoneFunction(FOperandBuffer& OutOperands)
-{ return 0.0; // To be developed. }
+double FOperations::NoneFunction(const FOperandBuffer& OutOperands)
+{ return 0.0; }
 
-double FOperations::LessThanFunction(FOperandBuffer& OutOperands)
+double FOperations::LessThanFunction(const FOperandBuffer& OutOperands)
 { 
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -17,7 +17,7 @@ double FOperations::LessThanFunction(FOperandBuffer& OutOperands)
 	return A < B ? 1.0 : 0.0;
 }
 
-double FOperations::GreaterThanFunction(FOperandBuffer& OutOperands)
+double FOperations::GreaterThanFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -25,7 +25,7 @@ double FOperations::GreaterThanFunction(FOperandBuffer& OutOperands)
 	return A > B ? 1.0 : 0.0;
 }
 
-double FOperations::LessEqualThanFunction(FOperandBuffer& OutOperands)
+double FOperations::LessEqualThanFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -33,7 +33,7 @@ double FOperations::LessEqualThanFunction(FOperandBuffer& OutOperands)
 	return A <= B ? 1.0 : 0.0;
 }
 
-double FOperations::GreaterEqualThanFunction(FOperandBuffer& OutOperands)
+double FOperations::GreaterEqualThanFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -41,7 +41,7 @@ double FOperations::GreaterEqualThanFunction(FOperandBuffer& OutOperands)
 	return A >= B ? 1.0 : 0.0;
 }
 
-double FOperations::EqualToFunction(FOperandBuffer& OutOperands)
+double FOperations::EqualToFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -49,7 +49,7 @@ double FOperations::EqualToFunction(FOperandBuffer& OutOperands)
 	return A == B ? 1.0 : 0.0;
 }
 
-double FOperations::NotEqualToFunction(FOperandBuffer& OutOperands)
+double FOperations::NotEqualToFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -57,7 +57,7 @@ double FOperations::NotEqualToFunction(FOperandBuffer& OutOperands)
 	return A != B ? 1.0 : 0.0;
 }
 
-double FOperations::MaximumFunction(FOperandBuffer& OutOperands)
+double FOperations::MaximumFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -65,7 +65,7 @@ double FOperations::MaximumFunction(FOperandBuffer& OutOperands)
 	return A > B ? A : B;
 }
 
-double FOperations::MinimumFunction(FOperandBuffer& OutOperands)
+double FOperations::MinimumFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -73,7 +73,7 @@ double FOperations::MinimumFunction(FOperandBuffer& OutOperands)
 	return A < B ? A : B;
 }
 
-double FOperations::AverageFunction(FOperandBuffer& OutOperands)
+double FOperations::AverageFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -81,51 +81,51 @@ double FOperations::AverageFunction(FOperandBuffer& OutOperands)
 	return (A + B) * 0.5;
 }
 
-double FOperations::SignFunction(FOperandBuffer& OutOperands)
+double FOperations::SignFunction(const FOperandBuffer& OutOperands)
 {
 	double A = OutOperands.Pull();
 
 	return A > 0.0 ? 1.0 : -1.0;
 }
 
-double FOperations::NegationFunction(FOperandBuffer& OutOperands)
+double FOperations::NegationFunction(const FOperandBuffer& OutOperands)
 { 
 	double A = OutOperands.Pull();
 
 	return -A;
 }
 
-double FOperations::AbsoluteFunction(FOperandBuffer& OutOperands)
+double FOperations::AbsoluteFunction(const FOperandBuffer& OutOperands)
 {
 	double A = OutOperands.Pull();
 
 	return A >= 0.0 ? A : -A;
 }
 
-double FOperations::GetNegativeFunction(FOperandBuffer& OutOperands)
+double FOperations::GetNegativeFunction(const FOperandBuffer& OutOperands)
 {
 	double A = OutOperands.Pull();
 
 	return A >= 0.0 ? -A : A;
 }
 
-double FOperations::RoundFunction(FOperandBuffer& OutOperands)
+double FOperations::RoundFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::RoofFunction(FOperandBuffer& OutOperands)
+double FOperations::RoofFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::FloorFunction(FOperandBuffer& OutOperands)
+double FOperations::FloorFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::TruncateFunction(FOperandBuffer& OutOperands)
+double FOperations::TruncateFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::AdditionFunction(FOperandBuffer& OutOperands)
+double FOperations::AdditionFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -133,7 +133,7 @@ double FOperations::AdditionFunction(FOperandBuffer& OutOperands)
 	return A + B;
 }
 
-double FOperations::SubtractionFunction(FOperandBuffer& OutOperands)
+double FOperations::SubtractionFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -141,7 +141,7 @@ double FOperations::SubtractionFunction(FOperandBuffer& OutOperands)
 	return A - B;
 }
 
-double FOperations::MultiplicationFunction(FOperandBuffer& OutOperands)
+double FOperations::MultiplicationFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -149,7 +149,7 @@ double FOperations::MultiplicationFunction(FOperandBuffer& OutOperands)
 	return A * B;
 }
 
-double FOperations::DivisionFunction(FOperandBuffer& OutOperands)
+double FOperations::DivisionFunction(const FOperandBuffer& OutOperands)
 {
 	double B = OutOperands.Pull();
 	double A = OutOperands.Pull();
@@ -157,85 +157,85 @@ double FOperations::DivisionFunction(FOperandBuffer& OutOperands)
 	return A / B;
 }
 
-double FOperations::ModuloFunction(FOperandBuffer& OutOperands)
+double FOperations::ModuloFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::RemainderFunction(FOperandBuffer& OutOperands)
+double FOperations::RemainderFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::ExponentiationFunction(FOperandBuffer& OutOperands)
+double FOperations::ExponentiationFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::SquareFunction(FOperandBuffer& OutOperands)
+double FOperations::SquareFunction(const FOperandBuffer& OutOperands)
 { 
 	double A = OutOperands.Pull();
 
 	return A * A;
 }
 
-double FOperations::SquareRootFunction(FOperandBuffer& OutOperands)
+double FOperations::SquareRootFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::CubicRootFunction(FOperandBuffer& OutOperands)
+double FOperations::CubicRootFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::SineFunction(FOperandBuffer& OutOperands)
+double FOperations::SineFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::CosineFunction(FOperandBuffer& OutOperands)
+double FOperations::CosineFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::TangentFunction(FOperandBuffer& OutOperands)
+double FOperations::TangentFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::SecantFunction(FOperandBuffer& OutOperands)
+double FOperations::SecantFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::CosecantFunction(FOperandBuffer& OutOperands)
+double FOperations::CosecantFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::CotangentFunction(FOperandBuffer& OutOperands)
+double FOperations::CotangentFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::ArcsineFunction(FOperandBuffer& OutOperands)
+double FOperations::ArcsineFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::ArccosineFunction(FOperandBuffer& OutOperands)
+double FOperations::ArccosineFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::ArctangentFunction(FOperandBuffer& OutOperands)
+double FOperations::ArctangentFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::ArcsecantFunction(FOperandBuffer& OutOperands)
+double FOperations::ArcsecantFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::ArccosecantFunction(FOperandBuffer& OutOperands)
+double FOperations::ArccosecantFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::ArccotangentFunction(FOperandBuffer& OutOperands)
+double FOperations::ArccotangentFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::LinearInterpolationFunction(FOperandBuffer& OutOperands)
+double FOperations::LinearInterpolationFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }
 
-double FOperations::MapRangeFunction(FOperandBuffer& OutOperands)
+double FOperations::MapRangeFunction(const FOperandBuffer& OutOperands)
 { return 0.0; // To be developed.
 }

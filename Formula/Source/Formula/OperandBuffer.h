@@ -7,7 +7,7 @@ class FOperandBuffer
 public:
     FOperandBuffer() = default;
 
-    double Pull()
+    double Pull() const
     {
 		if (IsEmpty())
             return double();
@@ -37,5 +37,5 @@ public:
 
 private:
     double Buffer[FOperations::GetMaxNumberOfOperands()] = {};
-    uint8 Index = 0;
+    mutable uint8 Index = 0;
 };

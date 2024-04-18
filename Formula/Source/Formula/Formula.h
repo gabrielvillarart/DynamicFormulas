@@ -66,11 +66,11 @@ private:
     {
         uint8 OperationID = PullFromData<uint8>(OutInfo.Index);
         
-        const FOperation& Operation = FOperations::Array[OperationID].get();
+        const FOperation& Operation = FOperations::StaticArray[OperationID].get();
         
         FOperandBuffer OperationOperands;
         
-        for (size_t i = 0; i < Operation.NumberOfOperands; i++)
+        for (size_t i = 0; i < Operation.GetNumberOfOperands(); i++)
         {
             ParseSolution(OperationOperands, OutInfo);
         }

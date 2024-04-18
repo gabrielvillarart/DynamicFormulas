@@ -254,13 +254,13 @@ private:
             {
                 // End sign parsing
                 
-                for (auto& OperationRef : FOperations::Array)
+                for (auto& OperationRef : FOperations::StaticArray)
                 {
                     auto& Operation = OperationRef.get();
                     
-                    for (size_t i = 0; i < Operation.KeywordsLength; i++)
+                    for (size_t i = 0; i < Operation.GetKeywordsLength(); i++)
                     {
-                        const FOperation::FKeyword& Keyword = Operation.Keywords[i];
+                        const FOperation::FKeyword& Keyword = Operation.GetKeywords()[i];
 
                         if (Keyword.Size > 2)
                             continue;
@@ -299,14 +299,14 @@ private:
                             PushIntoData(OutParsingContext, OutData, OutDataIndex, EParticleType::Operation);
                             PushIntoData(OutParsingContext, OutData, OutDataIndex, FOperations::GetID(Operation));
 
-                            OutParsingContext.StartScope(Operation.NumberOfOperands, true, OutDataIndex);
+                            OutParsingContext.StartScope(Operation.GetNumberOfOperands(), true, OutDataIndex);
                             OutParsingContext.Stage = EParsingStage::BeforeOperand;
                             return;
 
                         case EOperationType::Infix:
-                            OutParsingContext.SetPriorityIndex(Operation.Priority, OutDataIndex);
+                            OutParsingContext.SetPriorityIndex(Operation.GetPriority(), OutDataIndex);
                             PushIntoDataPriority(OutParsingContext, OutData, OutDataIndex, 
-                                FTwoDatas(EParticleType::Operation, FOperations::GetID(Operation)), Operation.Priority
+                                FTwoDatas(EParticleType::Operation, FOperations::GetID(Operation)), Operation.GetPriority()
                             );
 
                             OutParsingContext.ActiveScope().OperandsLeft++;
@@ -347,13 +347,13 @@ private:
             {
                 // End sign parsing
                 
-                for (auto& OperationRef : FOperations::Array)
+                for (auto& OperationRef : FOperations::StaticArray)
                 {
                     auto& Operation = OperationRef.get();
 
-                    for (size_t i = 0; i < Operation.KeywordsLength; i++)
+                    for (size_t i = 0; i < Operation.GetKeywordsLength(); i++)
                     {
-                        const FOperation::FKeyword& Keyword = Operation.Keywords[i];
+                        const FOperation::FKeyword& Keyword = Operation.GetKeywords()[i];
 
                         if (!IsLetter(Keyword.Buffer[0]))
                             continue;
@@ -390,7 +390,7 @@ private:
                             }
                             OutStringIndex++;
 
-                            OutParsingContext.StartScope(Operation.NumberOfOperands, true, OutDataIndex);
+                            OutParsingContext.StartScope(Operation.GetNumberOfOperands(), true, OutDataIndex);
 
                             PushIntoData(OutParsingContext, OutData, OutDataIndex, EParticleType::Operation);
                             PushIntoData(OutParsingContext, OutData, OutDataIndex, FOperations::GetID(Operation));
@@ -399,9 +399,9 @@ private:
                             return;
                             
                         case EOperationType::Infix:
-                            OutParsingContext.SetPriorityIndex(Operation.Priority, OutDataIndex);
+                            OutParsingContext.SetPriorityIndex(Operation.GetPriority(), OutDataIndex);
                             PushIntoDataPriority(OutParsingContext, OutData, OutDataIndex, 
-                                FTwoDatas(EParticleType::Operation, FOperations::GetID(Operation)), Operation.Priority
+                                FTwoDatas(EParticleType::Operation, FOperations::GetID(Operation)), Operation.GetPriority()
                             );
 
                             OutParsingContext.ActiveScope().OperandsLeft++;

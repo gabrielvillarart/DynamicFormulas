@@ -1,6 +1,5 @@
 
 #include "Formula/Formula.h"
-#include "Formula/Operation.h"
 #include "Formula/FormulaBuilder.h"
 #include "Profiler.h"
 
@@ -27,13 +26,6 @@ public:
         return Formula.GetSolution(this, &FSkill::ParseKeyword);
     }
 
-    void Tick()
-    {
-        Strength += 1.0;
-        Agility += 1.0;
-        Intelligence += 1.0;
-    }
-
 public:
     double Strength = 100.0;
     double Agility = 75.0;
@@ -45,19 +37,10 @@ int main()
 {
     FSkill Skill;
 
-    double Result = 0.0;
-    while (true)
-    {
-        {
-            PROFILE("Main");
-            for (int i = 0; i < 10000; i++)
-            {
-                constexpr auto Formula = FORMULA("(5 / Strength * Strength / Strength * Strength) * 0.005");
-                Result += Skill.Operate(Formula);
-                Skill.Tick();
-            }
-        }
+    auto Formula = FORMULA("(5 / Strength * Strength / Strength * Strength) * 0.005");
 
-        std::cin.get();
-    }
+    double Result = Skill.Operate(Formula);
 }
+
+
+

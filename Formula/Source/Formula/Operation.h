@@ -6,6 +6,11 @@ class FOperandBuffer;
 
 class FOperation
 {
+private:
+    using OperationFunctionType = double(*)(const FOperandBuffer&);
+
+    friend class FOperations;
+
 public:
     enum class ESyntaxType : uint8
     {
@@ -14,11 +19,6 @@ public:
         Prefix,
         Function,
     };
-
-public:
-    using OperationFunctionType = double(*)(FOperandBuffer&);
-
-    friend class FOperations;
 
     struct FKeyword
     {
@@ -39,6 +39,7 @@ public:
         uint8 Size = 0;
     };
 
+private:
     constexpr FOperation() = delete;
     constexpr FOperation(const FOperation&) = delete;
 
@@ -58,18 +59,22 @@ public:
     {}
 
 public:
+    constexpr uint8 GetNumberOfOperands() const { return NumberOfOperands; }
+    constexpr uint8 GetPriority() const { return Priority; }
+    constexpr const FKeyword* GetKeywords() const { return Keywords; }
+    constexpr uint8 GetKeywordsLength() const { return KeywordsLength; }
+
     constexpr bool operator == (const FOperation& Other) const
     {
         return Function == Other.Function;
     }
-    double operator ()(FOperandBuffer& Operands) const;
-    
+    double operator ()(const FOperandBuffer& Operands) const;
+
+private:
     const uint8 NumberOfOperands;
     const uint8 Priority;
     const FKeyword Keywords[2];
     const uint8 KeywordsLength;
-
-private:
     const OperationFunctionType Function;
 };
 
@@ -78,52 +83,55 @@ class FOperations
 private:
     using ESyntaxType = FOperation::ESyntaxType;
 
-private:
-    static double NoneFunction(FOperandBuffer& OutOperands);
-    static double LessThanFunction(FOperandBuffer& OutOperands);
-    static double GreaterThanFunction(FOperandBuffer& OutOperands);
-    static double LessEqualThanFunction(FOperandBuffer& OutOperands);
-    static double GreaterEqualThanFunction(FOperandBuffer& OutOperands);
-    static double EqualToFunction(FOperandBuffer& OutOperands);
-    static double NotEqualToFunction(FOperandBuffer& OutOperands);
-    static double MaximumFunction(FOperandBuffer& OutOperands);
-    static double MinimumFunction(FOperandBuffer& OutOperands);
-    static double AverageFunction(FOperandBuffer& OutOperands);
-    static double SignFunction(FOperandBuffer& OutOperands);
-    static double NegationFunction(FOperandBuffer& OutOperands);
-    static double AbsoluteFunction(FOperandBuffer& OutOperands);
-    static double GetNegativeFunction(FOperandBuffer& OutOperands);
-    static double RoundFunction(FOperandBuffer& OutOperands);
-    static double RoofFunction(FOperandBuffer& OutOperands);
-    static double FloorFunction(FOperandBuffer& OutOperands);
-    static double TruncateFunction(FOperandBuffer& OutOperands);
-    static double AdditionFunction(FOperandBuffer& OutOperands);
-    static double SubtractionFunction(FOperandBuffer& OutOperands);
-    static double MultiplicationFunction(FOperandBuffer& OutOperands);
-    static double DivisionFunction(FOperandBuffer& OutOperands);
-    static double ModuloFunction(FOperandBuffer& OutOperands);
-    static double RemainderFunction(FOperandBuffer& OutOperands);
-    static double ExponentiationFunction(FOperandBuffer& OutOperands);
-    static double SquareFunction(FOperandBuffer& OutOperands);
-    static double SquareRootFunction(FOperandBuffer& OutOperands);
-    static double CubicRootFunction(FOperandBuffer& OutOperands);
-    static double SineFunction(FOperandBuffer& OutOperands);
-    static double CosineFunction(FOperandBuffer& OutOperands);
-    static double TangentFunction(FOperandBuffer& OutOperands);
-    static double SecantFunction(FOperandBuffer& OutOperands);
-    static double CosecantFunction(FOperandBuffer& OutOperands);
-    static double CotangentFunction(FOperandBuffer& OutOperands);
-    static double ArcsineFunction(FOperandBuffer& OutOperands);
-    static double ArccosineFunction(FOperandBuffer& OutOperands);
-    static double ArctangentFunction(FOperandBuffer& OutOperands);
-    static double ArcsecantFunction(FOperandBuffer& OutOperands);
-    static double ArccosecantFunction(FOperandBuffer& OutOperands);
-    static double ArccotangentFunction(FOperandBuffer& OutOperands);
-    static double LinearInterpolationFunction(FOperandBuffer& OutOperands);
-    static double MapRangeFunction(FOperandBuffer& OutOperands);
+private: // Functions
+    static double NoneFunction(const FOperandBuffer& OutOperands);
+    static double LessThanFunction(const FOperandBuffer& OutOperands);
+    static double GreaterThanFunction(const FOperandBuffer& OutOperands);
+    static double LessEqualThanFunction(const FOperandBuffer& OutOperands);
+    static double GreaterEqualThanFunction(const FOperandBuffer& OutOperands);
+    static double EqualToFunction(const FOperandBuffer& OutOperands);
+    static double NotEqualToFunction(const FOperandBuffer& OutOperands);
+    static double MaximumFunction(const FOperandBuffer& OutOperands);
+    static double MinimumFunction(const FOperandBuffer& OutOperands);
+    static double AverageFunction(const FOperandBuffer& OutOperands);
+    static double SignFunction(const FOperandBuffer& OutOperands);
+    static double NegationFunction(const FOperandBuffer& OutOperands);
+    static double AbsoluteFunction(const FOperandBuffer& OutOperands);
+    static double GetNegativeFunction(const FOperandBuffer& OutOperands);
+    static double RoundFunction(const FOperandBuffer& OutOperands);
+    static double RoofFunction(const FOperandBuffer& OutOperands);
+    static double FloorFunction(const FOperandBuffer& OutOperands);
+    static double TruncateFunction(const FOperandBuffer& OutOperands);
+    static double AdditionFunction(const FOperandBuffer& OutOperands);
+    static double SubtractionFunction(const FOperandBuffer& OutOperands);
+    static double MultiplicationFunction(const FOperandBuffer& OutOperands);
+    static double DivisionFunction(const FOperandBuffer& OutOperands);
+    static double ModuloFunction(const FOperandBuffer& OutOperands);
+    static double RemainderFunction(const FOperandBuffer& OutOperands);
+    static double ExponentiationFunction(const FOperandBuffer& OutOperands);
+    static double SquareFunction(const FOperandBuffer& OutOperands);
+    static double SquareRootFunction(const FOperandBuffer& OutOperands);
+    static double CubicRootFunction(const FOperandBuffer& OutOperands);
+    static double SineFunction(const FOperandBuffer& OutOperands);
+    static double CosineFunction(const FOperandBuffer& OutOperands);
+    static double TangentFunction(const FOperandBuffer& OutOperands);
+    static double SecantFunction(const FOperandBuffer& OutOperands);
+    static double CosecantFunction(const FOperandBuffer& OutOperands);
+    static double CotangentFunction(const FOperandBuffer& OutOperands);
+    static double ArcsineFunction(const FOperandBuffer& OutOperands);
+    static double ArccosineFunction(const FOperandBuffer& OutOperands);
+    static double ArctangentFunction(const FOperandBuffer& OutOperands);
+    static double ArcsecantFunction(const FOperandBuffer& OutOperands);
+    static double ArccosecantFunction(const FOperandBuffer& OutOperands);
+    static double ArccotangentFunction(const FOperandBuffer& OutOperands);
+    static double LinearInterpolationFunction(const FOperandBuffer& OutOperands);
+    static double MapRangeFunction(const FOperandBuffer& OutOperands);
 
+    /* Custom Operations:
+    *  Declare your custom operation functions below.
+    */
 
-public:
+public: // Static Objects
     static constexpr FOperation None = {&NoneFunction, 0};
 
 
@@ -192,7 +200,13 @@ public:
     static constexpr FOperation LinearInterpolation = {&LinearInterpolationFunction, 3};
     static constexpr FOperation MapRange = {&MapRangeFunction, 5};
 
-	static constexpr std::reference_wrapper<const FOperation> Array[] = {
+    
+    /* Custom Operations:
+    *  Define your custom operation static objects below.
+    */
+
+public: // Static Array
+	static constexpr std::reference_wrapper<const FOperation> StaticArray[] = {
         None,
         LessThan,
         GreaterThan,
@@ -235,13 +249,16 @@ public:
         Arccotangent,
         LinearInterpolation,
         MapRange,
+        /* Custom Operations:
+        *  List custom operation static objects below.
+        */
     };
 
     static constexpr uint8 GetID(const FOperation& Operation)
     {
-        for (uint8 i = 0; i < sizeof(Array) / sizeof(std::reference_wrapper<const FOperation>); i++)
+        for (uint8 i = 0; i < sizeof(StaticArray) / sizeof(std::reference_wrapper<const FOperation>); i++)
         {
-            if (Array[i].get() == Operation)
+            if (StaticArray[i].get() == Operation)
                 return i;
         }
         return 0;
@@ -251,10 +268,10 @@ public:
     {
         uint8 Max = 0;
         
-        for (uint8 i = 1; i < sizeof(Array) / sizeof(std::reference_wrapper<const FOperation>); i++)
+        for (uint8 i = 1; i < sizeof(StaticArray) / sizeof(std::reference_wrapper<const FOperation>); i++)
         {
-            if (Array[i].get().NumberOfOperands > Max)
-                Max = Array[i].get().NumberOfOperands;
+            if (StaticArray[i].get().NumberOfOperands > Max)
+                Max = StaticArray[i].get().NumberOfOperands;
         }
 
         return Max;
