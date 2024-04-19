@@ -2,15 +2,21 @@
 
 #include "../Core.h"
 
-template<std::size_t size = 0>
-constexpr std::size_t GetValidLength(const char (&Data)[size])
+template<uint64 StringLength>
+using FStringLiteral = char[StringLength];
+
+template<uint64 DataLength>
+using FDataLiteral = uint8[DataLength];
+
+template<uint64 DataLength = 0>
+constexpr uint64 GetValidLength(const FDataLiteral<DataLength>& Data)
 {
-    for (size_t i = 0; i < size; i++)
+    for (size_t i = 0; i < DataLength; i++)
     {
         if (Data[i] == 0)
             return i;
     }
-    return size;
+    return DataLength;
 }
 
 
@@ -43,7 +49,7 @@ constexpr bool IsSign(const char& Character)
     return true;
 }
 
-constexpr bool IsLetter(const char& Character)
+constexpr bool IsLetter(char Character)
 {
     return bool(Character >= 'A' && (Character & 0b11011111) <= 'Z');
 }
@@ -57,17 +63,17 @@ constexpr int64 Power(int64 n,int64 m)
         return n*(Power(n,m-1));
 }
 
-template<size_t Size>
+template<size_t StringLength>
 struct F_ImplStringTo
 {
     template<typename Type>
-    static constexpr Type To(const char (&String)[Size], size_t Length = Size - 1)
+    static constexpr Type To(const FStringLiteral<StringLength>& String, size_t Length = StringLength - 1)
     {
         return Type(0);
     }
     
     template<>
-    static constexpr double To<double>(const char (&String)[Size], size_t Length)
+    static constexpr double To<double>(const FStringLiteral<StringLength>& String, size_t Length)
     {
         double Result= 0.0f;
         int64 DotPosition = 0;
@@ -93,7 +99,7 @@ struct F_ImplStringTo
     }
     
     template<>
-    static constexpr float To<float>(const char (&String)[Size], size_t Length)
+    static constexpr float To<float>(const FStringLiteral<StringLength>& String, size_t Length)
     {
         return (float)To<double>(String, Length);
     }
@@ -101,14 +107,14 @@ struct F_ImplStringTo
 };
 
 
-template<typename Type, size_t Size>
-constexpr Type StringTo(const char (&String)[Size])
+template<typename Type, size_t StringLength>
+constexpr Type StringTo(const FStringLiteral<StringLength>& String)
 {
-    return F_ImplStringTo<Size>::To<Type>(String);
+    return F_ImplStringTo<StringLength>::To<Type>(String);
 }
 
-template<typename Type, size_t Size>
-constexpr Type StringTo(const char (&String)[Size], size_t Length)
+template<typename Type, size_t StringLength>
+constexpr Type StringTo(const FStringLiteral<StringLength>& String, size_t Length)
 {
-    return F_ImplStringTo<Size>::To<Type>(String, Length);
+    return F_ImplStringTo<StringLength>::To<Type>(String, Length);
 }

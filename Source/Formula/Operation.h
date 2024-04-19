@@ -24,11 +24,11 @@ public:
     {
         constexpr FKeyword() = default;
 
-        template<size_t KeywordSize>
-        constexpr FKeyword(ESyntaxType Type, const char (&Keyword)[KeywordSize])
-            : Type(Type), Size(KeywordSize-1)
+        template<size_t KeywordLength>
+        constexpr FKeyword(ESyntaxType Type, const FStringLiteral<KeywordLength>& Keyword)
+            : Type(Type), Length(KeywordLength-1)
         {
-            for (size_t i = 0; i < KeywordSize; i++)
+            for (size_t i = 0; i < KeywordLength; i++)
             {
                 Buffer[i] = Keyword[i];
             }
@@ -36,7 +36,7 @@ public:
 
         const ESyntaxType Type = ESyntaxType::None;
         char Buffer[20] = {};
-        uint8 Size = 0;
+        uint8 Length = 0;
     };
 
 private:

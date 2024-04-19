@@ -21,11 +21,11 @@ class FFormula
 private:
     using EParticleType = EFormulaParticleType;
 
-    template<size_t ASize, size_t BSize>
-    static constexpr bool IsSameString(const char(&StringA)[ASize], const char(&StringB)[BSize], size_t ComparisonLength)
+    template<size_t StringALength, size_t StringBLength>
+    static constexpr bool IsSameString(const FStringLiteral<StringALength>& StringA, const FStringLiteral<StringBLength>& StringB, size_t ComparisonLength)
     {
-        size_t MinLengthA = ComparisonLength < ASize ? ComparisonLength : ASize;
-        size_t MinLengthB = ComparisonLength < BSize ? ComparisonLength : BSize;
+        size_t MinLengthA = ComparisonLength < StringALength ? ComparisonLength : StringALength;
+        size_t MinLengthB = ComparisonLength < StringBLength ? ComparisonLength : StringBLength;
 
         if (MinLengthA != MinLengthB)
             return false;
@@ -141,18 +141,19 @@ private:
 
 
 
-    template<uint16 Size>
+    template<uint16 Length>
     struct DataBuffer
     {
-        uint8 Data[Size] = {};
+        uint8 Data[Length] = {};
     };
 
-    template<typename T, uint16 DataSize>
-    static constexpr void PushIntoData(FParsingContext& OutParsingContext, uint8 (&OutData)[DataSize], uint16& OutIndex, const T& Data)
+    template<typename T, uint16 DataLength>
+    static constexpr void PushIntoData(FParsingContext& OutParsingContext, 
+        FDataLiteral<DataLength>& OutData, uint16& OutIndex, const T& Data)
     {
         using BufferType = DataBuffer<sizeof(Data)>;
 
-        if (sizeof(Data) + OutIndex > DataSize)
+        if (sizeof(Data) + OutIndex > DataLength)
         {
             OutParsingContext.Error = EParsingError::DataBufferOverload;
             return;
@@ -168,12 +169,12 @@ private:
         OutIndex += sizeof(Data);
     }
 
-    template<typename T, uint16 DataSize>
-    static constexpr void PushIntoIndex(FParsingContext& OutParsingContext, uint8 (&OutData)[DataSize], uint16& OutIndex, uint16 Index, const T& Data)
+    template<typename T, uint16 DataLength>
+    static constexpr void PushIntoIndex(FParsingContext& OutParsingContext, FDataLiteral<DataLength>& OutData, uint16& OutIndex, uint16 Index, const T& Data)
     {
         using BufferType = DataBuffer<sizeof(Data)>;
 
-        if (sizeof(Data) + OutIndex > DataSize)
+        if (sizeof(Data) + OutIndex > DataLength)
         {
             OutParsingContext.Error = EParsingError::DataBufferOverload;
             return;
@@ -194,8 +195,9 @@ private:
         }
     }
 
-    template<typename T, uint16 DataSize>
-    static constexpr void PushIntoDataPriority(FParsingContext& OutParsingContext, uint8 (&OutData)[DataSize], uint16& OutDataIndex, const T& Data, uint8 Priority)
+    template<typename T, uint16 DataLength>
+    static constexpr void PushIntoDataPriority(FParsingContext& OutParsingContext, 
+        FDataLiteral<DataLength>& OutData, uint16& OutDataIndex, const T& Data, uint8 Priority)
     {
         uint16 PriorityIndex = OutParsingContext.GetPriorityIndexFor(Priority, OutDataIndex);
         PushIntoIndex(OutParsingContext, OutData, OutDataIndex, PriorityIndex, Data);
@@ -208,12 +210,13 @@ private:
         }
     }
 
-    template<typename T, uint16 DataSize>
-    static constexpr void PushIntoData(FParsingContext& OutParsingContext, char (&OutData)[DataSize], uint16& OutIndex, const T& Data)
+    template<typename T, uint16 DataLength>
+    static constexpr void PushIntoData(FParsingContext& OutParsingContext, 
+        FStringLiteral<DataLength>& OutData, uint16& OutIndex, const T& Data)
     {
         using BufferType = DataBuffer<sizeof(Data)>;
 
-        if (sizeof(Data) + OutIndex > DataSize)
+        if (sizeof(Data) + OutIndex > DataLength)
         {
             OutParsingContext.Error = EParsingError::DataBufferOverload;
             return;
@@ -229,8 +232,9 @@ private:
         OutIndex += sizeof(Data);
     }
 
-    template<uint16 StringSize, uint16 DataSize>
-    static constexpr void ParseSign(FParsingContext& OutParsingContext, uint8(&OutData)[DataSize], uint16& OutDataIndex, uint16& OutStringIndex, const char(&InString)[StringSize])
+    template<uint16 StringLength, uint16 DataLength>
+    static constexpr void ParseSign(FParsingContext& OutParsingContext, 
+        FDataLiteral<DataLength>& OutData, uint16& OutDataIndex, uint16& OutStringIndex, const FStringLiteral<StringLength>& InString)
     {
         using EOperationType = FOperation::ESyntaxType;
 
@@ -240,7 +244,7 @@ private:
         PushIntoData(OutParsingContext, SignBuffer, SignIndex, InString[OutStringIndex]);
         OutStringIndex++;
 
-        while (OutStringIndex < StringSize)
+        while (OutStringIndex < StringLength)
         {
             if (IsSign(InString[OutStringIndex]))
             {
@@ -262,7 +266,7 @@ private:
                     {
                         const FOperation::FKeyword& Keyword = Operation.GetKeywords()[i];
 
-                        if (Keyword.Size > 2)
+                        if (Keyword.Length > 2)
                             continue;
 
                         if (OutParsingContext.Stage == EParsingStage::BeforeOperand && Keyword.Type == FOperation::ESyntaxType::Infix)
@@ -271,7 +275,7 @@ private:
                         if (OutParsingContext.Stage == EParsingStage::AfterOperand && Keyword.Type != EOperationType::Infix)
                             continue;
                     
-                        uint8 BiggestLength = Keyword.Size > SignIndex ? Keyword.Size : SignIndex;
+                        uint8 BiggestLength = Keyword.Length > SignIndex ? Keyword.Length : SignIndex;
 
                         if (!IsSameString(Keyword.Buffer, SignBuffer, BiggestLength))
                             continue;
@@ -285,11 +289,11 @@ private:
                             return;
 
                         case EOperationType::Function:
-                            while (OutStringIndex < StringSize && InString[OutStringIndex] == ' ')
+                            while (OutStringIndex < StringLength && InString[OutStringIndex] == ' ')
                             {
                                 OutStringIndex++;
                             }
-                            if (OutStringIndex >= StringSize || InString[OutStringIndex] != '(')
+                            if (OutStringIndex >= StringLength || InString[OutStringIndex] != '(')
                             {
                                 OutParsingContext.Error = EParsingError::NoScopeStartAfterFunctionIdentifier;
                                 return;
@@ -322,8 +326,9 @@ private:
         }
     }
 
-    template<uint16 StringSize, uint16 DataSize>
-    static constexpr void ParseWord(FParsingContext& OutParsingContext, uint8(&OutData)[DataSize], uint16& OutDataIndex, uint16& OutStringIndex, const char(&InString)[StringSize])
+    template<uint16 StringLength, uint16 DataLength>
+    static constexpr void ParseWord(FParsingContext& OutParsingContext, 
+        FDataLiteral<DataLength>& OutData, uint16& OutDataIndex, uint16& OutStringIndex, const FStringLiteral<StringLength>& InString)
     {
         using EOperationType = FOperation::ESyntaxType;
 
@@ -333,7 +338,7 @@ private:
         PushIntoData(OutParsingContext, KeywordBuffer, KeywordSize, InString[OutStringIndex]);
         OutStringIndex++;
 
-        while (OutStringIndex < StringSize)
+        while (OutStringIndex < StringLength)
         {
             if (IsLetter(InString[OutStringIndex]) || IsNumeral(InString[OutStringIndex]) || InString[OutStringIndex] == '_')
             {
@@ -364,7 +369,7 @@ private:
                         if (OutParsingContext.Stage == EParsingStage::AfterOperand && Keyword.Type != EOperationType::Infix)
                             continue;
 
-                        uint8 BiggestSize = Keyword.Size > KeywordSize ? Keyword.Size : KeywordSize;
+                        uint8 BiggestSize = Keyword.Length > KeywordSize ? Keyword.Length : KeywordSize;
 
                         if (!IsSameString(Keyword.Buffer, KeywordBuffer, BiggestSize))
                             continue;
@@ -379,11 +384,11 @@ private:
                             return;
 
                         case EOperationType::Function:
-                            while (OutStringIndex < StringSize && InString[OutStringIndex] == ' ')
+                            while (OutStringIndex < StringLength && InString[OutStringIndex] == ' ')
                             {
                                 OutStringIndex++;
                             }
-                            if (OutStringIndex >= StringSize || InString[OutStringIndex] != '(')
+                            if (OutStringIndex >= StringLength || InString[OutStringIndex] != '(')
                             {
                                 OutParsingContext.Error = EParsingError::NoScopeStartAfterFunctionIdentifier;
                                 return;
@@ -429,8 +434,10 @@ private:
         }
     }
 
-    template<uint16 StringSize, uint16 DataSize>
-    static constexpr void ParseNumber(FParsingContext& OutParsingContext, uint8(&OutData)[DataSize], uint16& OutDataIndex, uint16& OutStringIndex, const char(&InString)[StringSize], bool IsStartingWithDecimal)
+    template<uint16 StringLength, uint16 DataLength>
+    static constexpr void ParseNumber(FParsingContext& OutParsingContext, 
+        FDataLiteral<DataLength>& OutData, uint16& OutDataIndex, uint16& OutStringIndex, 
+        const FStringLiteral<StringLength>& InString, bool IsStartingWithDecimal)
     {
         char NumberBuffer[256] = {};
         uint16 NumberIndex = 0;
@@ -440,7 +447,7 @@ private:
         PushIntoData(OutParsingContext, NumberBuffer, NumberIndex, InString[OutStringIndex]);
         OutStringIndex++;
 
-        while (OutStringIndex < StringSize)
+        while (OutStringIndex < StringLength)
         {
             if (IsNumeral(InString[OutStringIndex]))
             {
@@ -486,12 +493,13 @@ private:
 
     }
 
-    template<uint16 StringSize, uint16 DataSize>
-    static constexpr void ParseString(FParsingContext& OutParsingContext, uint8 (&OutData)[DataSize], uint16& OutDataIndex, const char(&InString)[StringSize])
+    template<uint16 StringLength, uint16 DataLength>
+    static constexpr void ParseString(FParsingContext& OutParsingContext, 
+        FDataLiteral<DataLength>& OutData, uint16& OutDataIndex, const FStringLiteral<StringLength>& InString)
     {
         uint16 StringIndex = 0;
 
-        while (StringIndex < StringSize)
+        while (StringIndex < StringLength)
         {
             if (OutParsingContext.Error != EParsingError::None)
                 return;
@@ -634,8 +642,8 @@ private:
         }
     }
 
-    template<uint16 DataSize>
-    static constexpr void InfixToPrefix(uint8 (&OutData)[DataSize], uint16& OutDataIndex)
+    template<uint16 DataLength>
+    static constexpr void InfixToPrefix(FDataLiteral<DataLength>& OutData, uint16& OutDataIndex)
     {
         uint8 NewDataBuffer[1000] = {};
         uint16 NewDataIndex = 0;
@@ -643,8 +651,8 @@ private:
     }
 
 public:
-    template<uint16 StringSize>
-    static constexpr uint16 GetDataSizeFromString(const char(&String)[StringSize])
+    template<uint16 StringLength>
+    static constexpr uint16 GetDataLengthFromString(const FStringLiteral<StringLength>& String)
     {
         uint16 DataIndex = 0;
         uint8 DataBuffer[1000] = {};
@@ -660,8 +668,8 @@ public:
         return DataIndex;
     }
 
-    template<uint16 FormulaSize, uint16 StringSize>
-    static constexpr auto Create(const char(&String)[StringSize])
+    template<uint16 FormulaSize, uint16 StringLength>
+    static constexpr auto Create(const FStringLiteral<StringLength>& String)
     {
         //static_assert(FormulaSize > 0, "Formula creation need to have size greater than 0.");
 
@@ -683,4 +691,4 @@ public:
 
 };
 
-#define FORMULA(TEXT) FFormula::Create<FFormula::GetDataSizeFromString( TEXT )>( TEXT )
+#define FORMULA(TEXT) FFormula::Create<FFormula::GetDataLengthFromString( TEXT )>( TEXT )

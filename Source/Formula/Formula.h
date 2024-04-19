@@ -17,7 +17,7 @@ enum class EFormulaParticleType : uint8
 };
 
 
-template<size_t FormulaSize>
+template<size_t FormulaLength>
 class TFormula
 {
 public:
@@ -37,10 +37,10 @@ private:
     TFormula() = delete;
     TFormula(const TFormula&) = delete;
 
-    template<size_t BufferSize>
-    constexpr TFormula(const uint8(&Buffer)[BufferSize])
+    template<size_t DataLength>
+    constexpr TFormula(const FDataLiteral<DataLength>& Buffer)
     {
-        size_t WorkSize = FormulaSize < BufferSize? FormulaSize : BufferSize;
+        size_t WorkSize = FormulaLength < DataLength? FormulaLength : DataLength;
         for (size_t i = 0; i < WorkSize; i++)
         {
             Data[i] = (uint8)Buffer[i];
@@ -124,9 +124,12 @@ private:
 
 public:
     template<typename T>
-    double GetSolution(const T* ObjectPtr, double(T::*ParseFunctionPtr)(const FKeyword&) const) const
+    using ParseKeywordSignature = double(T::*)(const FKeyword&) const;
+
+    template<typename T>
+    double GetSolution(const T* ObjectPtr, ParseKeywordSignature<T> ParseKeywordFunction) const
     {
-        FSolutionInfo<T> Info(ObjectPtr, ParseFunctionPtr);
+        FSolutionInfo<T> Info(ObjectPtr, ParseKeywordFunction);
         FOperandBuffer Operands;
 
         ParseSolution(Operands, Info);
@@ -134,8 +137,8 @@ public:
         return Operands.Pull();
     }
 
-    constexpr uint8 GetSize() const { return FormulaSize; }
+    constexpr uint8 GetSize() const { return FormulaLength; }
 
 private:
-    uint8 Data[FormulaSize] = {};
+    uint8 Data[FormulaLength] = {};
 };

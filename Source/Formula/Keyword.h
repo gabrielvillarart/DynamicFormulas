@@ -11,10 +11,10 @@ public:
 		: StringPtr(StringPtr), Length(Length)
 	{}
 
-	template<uint8 StringSize>
-	bool operator == (const char(&String)[StringSize]) const
+	template<uint8 StringLength>
+	bool operator == (const FStringLiteral<StringLength>& String) const
 	{
-        if (Length != StringSize - 1)
+        if (Length != StringLength - 1)
             return false;
 
         for (size_t i = 0; i < Length; i++)

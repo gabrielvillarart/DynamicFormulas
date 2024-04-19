@@ -37,7 +37,7 @@ int main()
 {
     FSkill Skill;
 
-    auto Formula = FORMULA("(5 / Strength * Strength / Strength * Strength) * 0.005");
+    constexpr auto Formula = FORMULA("(5 / Strength * Strength / Strength * Strength) * 0.005");
 
     double Result = Skill.Operate(Formula);
 }
