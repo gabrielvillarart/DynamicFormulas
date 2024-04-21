@@ -18,6 +18,11 @@ struct FTwoDatas
 #pragma pack(pop) // Toggle on byte alignment on classes.
 class FFormula
 {
+public:
+    template<uint16 StringLength>
+    constexpr FFormula(const FStringLiteral<StringLength>& String);
+
+    //const uint8* Data;
 private:
     using EParticleType = EFormulaParticleType;
 
@@ -652,7 +657,7 @@ private:
 
 public:
     template<uint16 StringLength>
-    static constexpr uint16 GetDataLengthFromString(const FStringLiteral<StringLength>& String)
+    static consteval uint16 GetDataLengthFromString(const FStringLiteral<StringLength>& String)
     {
         uint16 DataIndex = 0;
         uint8 DataBuffer[1000] = {};
@@ -669,7 +674,7 @@ public:
     }
 
     template<uint16 FormulaSize, uint16 StringLength>
-    static constexpr auto Create(const FStringLiteral<StringLength>& String)
+    static consteval auto Create(const FStringLiteral<StringLength>& String)
     {
         //static_assert(FormulaSize > 0, "Formula creation need to have size greater than 0.");
 
@@ -689,6 +694,16 @@ public:
         }
     }
 
+private:
+    inline static uint32 ConstFormulasLength = 0;
 };
 
 #define FORMULA(TEXT) FFormula::Create<FFormula::GetDataLengthFromString( TEXT )>( TEXT )
+
+template<uint16 StringLength>
+inline constexpr FFormula::FFormula(const FStringLiteral<StringLength>& String)
+{
+    constexpr uint16 FormulaLength = FFormula::GetDataLengthFromString(String);
+    //ConstFormulasLength += FormulaLength;
+}
+

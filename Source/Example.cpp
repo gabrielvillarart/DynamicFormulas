@@ -20,10 +20,10 @@ public:
         return 0.0;
     }
 
-    template<size_t FormulaSize>
-    double Operate(const TFormula<FormulaSize>& Formula) const
+    template<size_t FormulaLength>
+    double Operate(const TFormula<FormulaLength>& Formula) const
     {
-        return Formula.GetSolution(this, &FSkill::ParseKeyword);
+        return Formula.GetSolution(*this, &FSkill::ParseKeyword);
     }
 
 public:
@@ -33,14 +33,14 @@ public:
 
 };
 
+
+
 int main()
 {
     FSkill Skill;
 
-    constexpr auto Formula = FORMULA("(5 / Strength * Strength / Strength * Strength) * 0.005");
-
-    double Result = Skill.Operate(Formula);
+    double SumOfAttributes = Skill.Operate(FORMULA("Strength + Agility + Intelligence"));
+    // Or FORMULA("Strength + Agility + Intelligence").GetSolution(Skill, &FSkill::ParseKeyword);
 }
-
 
 

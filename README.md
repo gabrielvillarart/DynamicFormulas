@@ -21,7 +21,7 @@ The string must contain the Formula's expression.<br />
  Example:<br />
 ```
 #include "Formula/FormulaBuilder.h"
-constexpr auto Formula = FORMULA("SquareRoot(Square(SideA) + Square(SideB)");
+auto Formula = FORMULA("SquareRoot(Square(SideA) + Square(SideB)");
 ```
 
 ### Parsing Formulas
@@ -29,7 +29,8 @@ Use the GetSolution() method of the TFormula[] class(created by the FORMULA() ma
 Pass the object and the object's method that will be used to parse the keywords of the formula.<br />
  Example:<br />
 ```
-
+class FSkill
+{
 public:
     double ParseKeyword(const FKeyword& Keyword) const
     {
@@ -45,11 +46,18 @@ public:
         return 0.0;
     }
 
-    template<size_t FormulaSize>
-    double Operate(const TFormula<FormulaSize>& Formula) const
-    {
-        return Formula.GetSolution(this, &FSkill::ParseKeyword);
-    }
+public:
+    double Strength = 100.0;
+    double Agility = 75.0;
+    double Intelligence = 50.0;
+
+};
+
+int main()
+{
+    FSkill Skill;
+    double SumOfAttributes = FORMULA("Strength + Agility + Intelligence").GetSolution(Skill, &FSkill::ParseKeyword)
+}
 ```
 
 ### Defining Custom Operations

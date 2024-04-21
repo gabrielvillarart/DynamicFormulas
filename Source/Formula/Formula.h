@@ -50,15 +50,15 @@ private:
     template<typename T>
     struct FSolutionInfo
     {
-        using FunctionType = double(T::*)(const FKeyword&) const;
+        using FunctionSignature = double(T::*)(const FKeyword&) const;
 
-        FSolutionInfo(const T* ObjectPtr, const FunctionType ParseFunctionPtr)
+        FSolutionInfo(const T* ObjectPtr, const FunctionSignature ParseFunctionPtr)
 			: ObjectPtr(ObjectPtr), FunctionPtr(ParseFunctionPtr)
         {}
 
         uint16 Index = 0;
 		const T* const ObjectPtr;
-		const FunctionType FunctionPtr;
+		const FunctionSignature FunctionPtr;
     };
 
     template<typename T>
@@ -127,15 +127,28 @@ public:
     using ParseKeywordSignature = double(T::*)(const FKeyword&) const;
 
     template<typename T>
-    double GetSolution(const T* ObjectPtr, ParseKeywordSignature<T> ParseKeywordFunction) const
+    double GetSolution(const T& ObjectPtr, ParseKeywordSignature<T> ParseKeywordFunction) const
     {
-        FSolutionInfo<T> Info(ObjectPtr, ParseKeywordFunction);
+        FSolutionInfo<T> Info(&ObjectPtr, ParseKeywordFunction);
         FOperandBuffer Operands;
 
         ParseSolution(Operands, Info);
 
         return Operands.Pull();
     }
+
+    //using ParseKeywordStaticSignature = double()(const FKeyword&) const;
+
+    //template<typename T>
+    //double GetSolution(ParseKeywordStaticSignature ParseKeywordFunction) const
+    //{
+    //    FSolutionInfo<T> Info(nullptr, ParseKeywordFunction);
+    //    FOperandBuffer Operands;
+
+    //    ParseSolution(Operands, Info);
+
+    //    return Operands.Pull();
+    //}
 
     constexpr uint8 GetSize() const { return FormulaLength; }
 
