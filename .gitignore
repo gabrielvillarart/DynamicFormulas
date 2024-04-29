@@ -1,6 +1,9 @@
 # Binaries
 **/x64/
 **/Formula/x64/
+Lib/*
+Lib-Int/*
+
 
 FormulaProject/*
 
@@ -10,3 +13,4 @@ FormulaProject/*
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+
